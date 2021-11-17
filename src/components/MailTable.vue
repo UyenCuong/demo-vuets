@@ -24,7 +24,6 @@
       </tr>
     </tbody>
   </table>
-  <MailView v-if="openedEmail" :email="openedEmail" />
 </template>
 
 <script lang="ts">
@@ -33,9 +32,6 @@ import { format } from "date-fns";
 import axios from "axios";
 import MailView from '@/components/MailView.vue';
 export default {
-  components: {
-    MailView,
-  },
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
 
@@ -47,7 +43,7 @@ export default {
       email.archived = !email.archived;
       console.log(email.archived);
     };
-    // const sortedEmail:any = computed(() => {
+    // const sortedEmail = computed(() => {
     // return sortedEmail.email.sort(item1, item2)=>{
     //   return item1.sentAt <item2.sentAt  ? 1 : -1
     // }
