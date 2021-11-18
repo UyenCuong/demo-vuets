@@ -1,11 +1,11 @@
 <template>
   <h1 class="text-primary">VMail Inbox</h1>
-  <Suspense>
-    <template #default>
+  <Suspense> 
+    <template #default> 
       <MailTable />
-    </template>
-    <template #fallback> Loading... </template>
-  </Suspense>
+    </template> 
+    <template #fallback> Loading... </template> 
+   </Suspense>
 </template>
 
 <script lang="ts">

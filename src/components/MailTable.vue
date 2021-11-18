@@ -2,11 +2,11 @@
   <table class="mail-table">
     <tbody>
       <tr
-        v-for="email in emails"
+        v-for="email in sortedEmails"
         :key="email.id"
         class="clickable"
         :class="{ read: email.read }"
-        @click="listItem(email)"
+        @click="actionEmail(email)"
       >
         <td>
           <a-checkbox></a-checkbox>
@@ -20,7 +20,7 @@
         <td class="date">
           {{ format(new Date(email.sentAt), "MMM do yyyy") }}
         </td>
-        <td><Button @click="listArchived(email)">Archive</Button></td>
+        <td><Button @click="archivedEmail(email)">Archive</Button></td>
       </tr>
     </tbody>
   </table>
@@ -30,35 +30,36 @@
 import { ref, computed } from "vue";
 import { format } from "date-fns";
 import axios from "axios";
-import MailView from '@/components/MailView.vue';
+
 export default {
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
 
-    const listItem = (email: any) => {
+    const actionEmail = (email: any) => {
       email.read = !email.read;
+      axios.put(`http://localhost:3000/emails/${email.id}`, email);
       console.log(email.read);
     };
-    const listArchived = (email: any) => {
+    const archivedEmail = (email: any) => {
       email.archived = !email.archived;
-      console.log(email.archived);
+      axios.put(`http://localhost:3000/emails/${email.id}`, email);
     };
-    // const sortedEmail = computed(() => {
-    // return sortedEmail.email.sort(item1, item2)=>{
-    //   return item1.sentAt <item2.sentAt  ? 1 : -1
-    // }
-    // })
-    // const unarchivedEmails = computed(() => {
-
-    // });
+    const sortedEmails = computed(() => {
+      return emails.sort((item1: any, item2: any) => {
+        return item1.sentAt < item2.sentAt ? 1 : -1;
+      });
+    });
+    const unarchivedEmails = computed(() => {
+      return emails.sortedEmails.filter((item: any) => !item.archived);
+    });
 
     return {
       format,
       emails: ref(emails),
-      listItem,
-      listArchived,
-      // sortedEmail,
-      // unarchivedEmails
+      actionEmail,
+      archivedEmail,
+      sortedEmails,
+      unarchivedEmails,
     };
   },
 };
