@@ -47,13 +47,13 @@ export default {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
 
     const openEmail = (email: any) => {
-      email.read = !email.read;
+      email.read = true;
       emails.openedEmail = email;
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
       console.log(emails.openedEmail.subject);
     };
     const archiveEmail = (email: any) => {
-      email.archived = !email.archived;
+      email.archived = true;
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
     };
     const sortedEmails = computed(() => {
