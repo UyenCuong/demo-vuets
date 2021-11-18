@@ -4,9 +4,8 @@
       <tr
         v-for="email in unarchivedEmails"
         :key="email.id"
-        class="clickable"
-        :class="{ read: email.read }"
-        @click="actionEmail(email)"
+        :class="['clickable', email.read ? 'read' : '']"
+        @click="openEmail(email)"
       >
         <td>
           <a-checkbox></a-checkbox>
@@ -20,13 +19,25 @@
         <td class="date">
           {{ format(new Date(email.sentAt), "MMM do yyyy") }}
         </td>
-        <td><Button @click="archivedEmail(email)">Archive</Button></td>
+        <td><Button @click="archiveEmail(email)">Archive</Button></td>
       </tr>
     </tbody>
   </table>
+  <div v-if="openedEmail">
+    {{ emails.openedEmail.subject }}
+  </div>
 </template>
 
 <script lang="ts">
+interface Email {
+  id: number;
+  from: string;
+  subject: string;
+  body: string;
+  sentAt: string;
+  archived: boolean;
+  read: boolean;
+}
 import { ref, computed } from "vue";
 import { format } from "date-fns";
 import axios from "axios";
@@ -35,13 +46,14 @@ export default {
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
 
-    const actionEmail = (email: any) => {
-      email.read = true;
+    const openEmail = (email: any) => {
+      email.read = !email.read;
+      emails.openedEmail = email;
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
-      console.log(email.read);
+      console.log(emails.openedEmail.subject);
     };
-    const archivedEmail = (email: any) => {
-      email.archived = true;
+    const archiveEmail = (email: any) => {
+      email.archived = !email.archived;
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
     };
     const sortedEmails = computed(() => {
@@ -56,8 +68,9 @@ export default {
     return {
       format,
       emails: ref(emails),
-      actionEmail,
-      archivedEmail,
+      openEmail,
+      openedEmail: ref(null),
+      archiveEmail,
       sortedEmails,
       unarchivedEmails,
     };
