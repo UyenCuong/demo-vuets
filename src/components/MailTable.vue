@@ -2,7 +2,7 @@
   <table class="mail-table">
     <tbody>
       <tr
-        v-for="email in sortedEmails"
+        v-for="email in unarchivedEmails"
         :key="email.id"
         class="clickable"
         :class="{ read: email.read }"
@@ -36,12 +36,12 @@ export default {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
 
     const actionEmail = (email: any) => {
-      email.read = !email.read;
+      email.read = true;
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
       console.log(email.read);
     };
     const archivedEmail = (email: any) => {
-      email.archived = !email.archived;
+      email.archived = true;
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
     };
     const sortedEmails = computed(() => {
@@ -50,7 +50,7 @@ export default {
       });
     });
     const unarchivedEmails = computed(() => {
-      return emails.sortedEmails.filter((item: any) => !item.archived);
+      return sortedEmails.value.filter((item: any) => !item.archived);
     });
 
     return {
