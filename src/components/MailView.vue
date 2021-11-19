@@ -16,7 +16,7 @@
     <div>
       <em
         >From {{ email.from }} on
-        {{ format(new Date(email.sentAt), "MMM do yyyy") }}
+        {{ format(new Date(email.sentAt), "do MMM yyy") }}
       </em>
     </div>
     <div v-html="marked(email.body)" />
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import marked from "marked";
 import axios from "axios";
 import { ref } from "vue";
@@ -69,6 +69,7 @@ export default {
     };
     return {
       format,
+     parseISO,
       marked,
       toggleRead,
       toggleArchive,

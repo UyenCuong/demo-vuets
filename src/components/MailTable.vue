@@ -17,7 +17,7 @@
           </p>
         </td>
         <td class="date">
-          {{ format(Date.now(email.sentAt), "MMM do yyyy") }}
+          {{ format(new Date(email.sentAt), "do MMM yyy") }}
         </td>
         <td>
           <Button @click="archiveEmail(email)">Archive</Button>
@@ -41,7 +41,7 @@ interface Email {
   read: boolean;
 }
 import { ref, computed } from "vue";
-import { format } from "date-fns";
+import { format,parseISO } from "date-fns";
 import axios from "axios";
 import MailView from "@/components/MailView.vue";
 import ModalView from "@/components/ModalView.vue";
@@ -56,11 +56,11 @@ export default {
     const openEmail = (email: any) => {
       email.read = true;
       dataDetail.value = email;
-     emails.updateEmail(email);
+      emails.updateEmail(email);
     };
     const archiveEmail = (email: any) => {
       email.archived = true;
-     dataDetail.value.updateEmail(email);
+      dataDetail.value.updateEmail(email);
     };
     const updateEmail = (email: any) => {
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
@@ -91,12 +91,12 @@ export default {
       if (closeModal) {
         dataDetail.value = null;
       }
-       if(changeIndex) {
-          let emails = dataDetail.value.unarchivedEmails
-          let currentIndex = emails.indexOf(dataDetail.value)
-          let newEmail = emails[currentIndex + changeIndex]
-          dataDetail.value(newEmail)
-        }
+      if (changeIndex) {
+        let emails = dataDetail.value.unarchivedEmails;
+        let currentIndex = emails.indexOf(dataDetail.value);
+        let newEmail = emails[currentIndex + changeIndex];
+        dataDetail.value(newEmail);
+      }
     };
     const sortedEmails = computed(() => {
       return emails.sort((item1: any, item2: any) => {
@@ -109,6 +109,7 @@ export default {
 
     return {
       format,
+      parseISO,
       emails: ref(emails),
       openEmail,
       dataDetail,
@@ -122,4 +123,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.ant-checkbox-inner {
+  top: -10px;
+}
+</style>
