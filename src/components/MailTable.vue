@@ -70,7 +70,7 @@ export default {
     const unarchivedEmails = computed(() => {
       return sortedEmails.value.filter((item: any) => !item.archived);
     });
-console.log(emails)
+
     return {
       format,
       emails: ref(emails),

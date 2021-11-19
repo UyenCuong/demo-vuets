@@ -16,10 +16,10 @@
     <div>
       <em
         >From {{ email.from }} on
-        <!-- {{ format(new Date(email.sentAt), "MMM do yyyy") }} -->
+        {{ format( new Date(email.sentAt), "MMM do yyyy") }}
       </em>
     </div>
-    <!-- <div v-html="marked(email.body)" /> -->
+    <div v-html="marked(email.body)" />
   </div>
 </template>
 
