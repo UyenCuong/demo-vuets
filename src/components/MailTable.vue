@@ -19,7 +19,9 @@
         <td class="date">
           {{ format(new Date(email.sentAt), "MMM do yyyy") }}
         </td>
-        <td><Button @click="archiveEmail(email)">Archive</Button></td>
+        <td>
+          <Button @click="archiveEmail(email)">Archive</Button>
+          </td>
       </tr>
     </tbody>
   </table>
@@ -68,7 +70,7 @@ export default {
     const unarchivedEmails = computed(() => {
       return sortedEmails.value.filter((item: any) => !item.archived);
     });
-
+console.log(emails)
     return {
       format,
       emails: ref(emails),

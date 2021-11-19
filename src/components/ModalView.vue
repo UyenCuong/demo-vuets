@@ -1,8 +1,13 @@
 <template>
   <div class="modal">
-    <div class="overlay" ></div>
+    <div class="overlay"></div>
     <div class="modal-card">
-      <button type="button" class="close" aria-label="Close" @click="emit('closeModal')">
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        @click="emit('closeModal')"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
       <slot />
