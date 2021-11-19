@@ -18,7 +18,7 @@ export default {
 };
 </script>
 
-<style>
+<style >
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -69,7 +69,17 @@ input[type="checkbox"]:checked {
   margin-bottom: 0;
 }
 /* Modal */
-.modal,
+/* .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+    display: block;
+} */
 .overlay {
   width: 100%;
   height: 100%;

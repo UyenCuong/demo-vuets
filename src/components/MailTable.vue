@@ -23,9 +23,9 @@
       </tr>
     </tbody>
   </table>
-  <div v-if="openedEmail">
-    {{ emails.openedEmail.subject }}
-  </div>
+  <ModalView v-if="dataDetail" @closeModal="dataDetail = null">
+    <MailView :email="dataDetail" />
+  </ModalView>
 </template>
 
 <script lang="ts">
@@ -41,16 +41,20 @@ interface Email {
 import { ref, computed } from "vue";
 import { format } from "date-fns";
 import axios from "axios";
-
+import MailView from "@/components/MailView.vue";
+import ModalView from "@/components/ModalView.vue";
 export default {
+  components: {
+    MailView,
+    ModalView,
+  },
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
-
+    const dataDetail = ref();
     const openEmail = (email: any) => {
       email.read = true;
-      emails.openedEmail = email;
+      dataDetail.value = email;
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
-      console.log(emails.openedEmail.subject);
     };
     const archiveEmail = (email: any) => {
       email.archived = true;
@@ -69,7 +73,7 @@ export default {
       format,
       emails: ref(emails),
       openEmail,
-      openedEmail: ref(null),
+      dataDetail,
       archiveEmail,
       sortedEmails,
       unarchivedEmails,
