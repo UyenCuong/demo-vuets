@@ -17,16 +17,16 @@
           </p>
         </td>
         <td class="date">
-          {{ format(new Date(email.sentAt), "MMM do yyyy") }}
+          {{ format(Date.now(email.sentAt), "MMM do yyyy") }}
         </td>
         <td>
           <Button @click="archiveEmail(email)">Archive</Button>
-          </td>
+        </td>
       </tr>
     </tbody>
   </table>
   <ModalView v-if="dataDetail" @closeModal="dataDetail = null">
-    <MailView :email="dataDetail" />
+    <MailView :email="dataDetail" @changeEmail="changeEmail" />
   </ModalView>
 </template>
 
@@ -56,11 +56,47 @@ export default {
     const openEmail = (email: any) => {
       email.read = true;
       dataDetail.value = email;
-      axios.put(`http://localhost:3000/emails/${email.id}`, email);
+     emails.updateEmail(email);
     };
     const archiveEmail = (email: any) => {
       email.archived = true;
+     dataDetail.value.updateEmail(email);
+    };
+    const updateEmail = (email: any) => {
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
+    };
+    const changeEmail = ({
+      toggleRead,
+      toggleArchive,
+      save,
+      closeModal,
+      changeIndex,
+    }: {
+      toggleRead: any;
+      toggleArchive: any;
+      save: any;
+      closeModal: any;
+      changeIndex: any;
+    }) => {
+      const email = dataDetail.value;
+      if (toggleRead) {
+        email.read = !email.read;
+      }
+      if (toggleArchive) {
+        email.archived = !email.archived;
+      }
+      if (save) {
+        emails.updateEmail(email);
+      }
+      if (closeModal) {
+        dataDetail.value = null;
+      }
+       if(changeIndex) {
+          let emails = dataDetail.value.unarchivedEmails
+          let currentIndex = emails.indexOf(dataDetail.value)
+          let newEmail = emails[currentIndex + changeIndex]
+          dataDetail.value(newEmail)
+        }
     };
     const sortedEmails = computed(() => {
       return emails.sort((item1: any, item2: any) => {
@@ -79,6 +115,8 @@ export default {
       archiveEmail,
       sortedEmails,
       unarchivedEmails,
+      updateEmail,
+      changeEmail,
     };
   },
 };

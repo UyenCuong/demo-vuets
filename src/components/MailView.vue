@@ -16,7 +16,7 @@
     <div>
       <em
         >From {{ email.from }} on
-        {{ format( new Date(email.sentAt), "MMM do yyyy") }}
+        {{ format(new Date(email.sentAt), "MMM do yyyy") }}
       </em>
     </div>
     <div v-html="marked(email.body)" />
@@ -35,21 +35,47 @@ export default {
       required: true,
     },
   },
-  setup(props: any) {
+  setup(props: any, { emit }: any) {
     const email = ref<any>(props.email);
+    // const toggleRead = () => {
+    //   email.value.read = !email.value.read;
+    //   axios.put(`http://localhost:3000/emails/${email.value.id}`, email);
+    // };
+    // const toggleArchive = () => {
+    //   email.value.archived = !email.value.archived;
+    //   axios.put(`http://localhost:3000/emails/${email.value.id}`, email);
+    // };
     const toggleRead = () => {
-      email.value.read = !email.value.read;
-      axios.put(`http://localhost:3000/emails/${email.value.id}`, email);
+      emit("changeEmail", { toggleRead: true, save: true });
     };
     const toggleArchive = () => {
-      email.value.archived = !email.value.archived;
-      axios.put(`http://localhost:3000/emails/${email.value.id}`, email);
+      emit("changeEmail", {
+        toggleArchive: true,
+        save: true,
+        closeModal: true,
+      });
+    };
+    const goNewer = () => {
+      emit("changeEmail", { changeIndex: -1 });
+    };
+    const goOlder = () => {
+      emit("changeEmail", { changeIndex: 1 });
+    };
+    const goNewerAndArchive = () => {
+      emit("changeEmail", { changeIndex: -1, toggleArchive: true, save: true });
+    };
+    const goOlderAndArchive = () => {
+      emit("changeEmail", { changeIndex: 1, toggleArchive: true, save: true });
     };
     return {
       format,
       marked,
       toggleRead,
       toggleArchive,
+      goNewer,
+      goOlder,
+      goNewerAndArchive,
+      goOlderAndArchive,
     };
   },
 };
