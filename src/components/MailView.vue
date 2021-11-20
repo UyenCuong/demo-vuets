@@ -69,7 +69,7 @@ export default {
     };
     return {
       format,
-     parseISO,
+      parseISO,
       marked,
       toggleRead,
       toggleArchive,

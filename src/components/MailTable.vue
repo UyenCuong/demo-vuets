@@ -5,22 +5,22 @@
         v-for="email in unarchivedEmails"
         :key="email.id"
         :class="['clickable', email.read ? 'read' : '']"
-        @click="openEmail(email)"
+         @click="openEmail(email)"
       >
         <td>
           <a-checkbox></a-checkbox>
         </td>
         <td>{{ email.from }}</td>
-        <td>
+        <td >
           <p>
             <strong> {{ email.subject }} </strong> -{{ email.bode }}
           </p>
         </td>
-        <td class="date">
+        <td class="date" >
           {{ format(new Date(email.sentAt), "do MMM yyy") }}
         </td>
         <td>
-          <Button @click="archiveEmail(email)">Archive</Button>
+          <a-button @click="archiveEmail(email)">Archive</a-button>
         </td>
       </tr>
     </tbody>
@@ -41,7 +41,7 @@ interface Email {
   read: boolean;
 }
 import { ref, computed } from "vue";
-import { format,parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import axios from "axios";
 import MailView from "@/components/MailView.vue";
 import ModalView from "@/components/ModalView.vue";
@@ -54,13 +54,15 @@ export default {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
     const dataDetail = ref();
     const openEmail = (email: any) => {
-      email.read = true;
       dataDetail.value = email;
-      emails.updateEmail(email);
+      if (email) {
+        email.read = true;
+        updateEmail(email);
+      }
     };
     const archiveEmail = (email: any) => {
       email.archived = true;
-      dataDetail.value.updateEmail(email);
+      updateEmail(email);
     };
     const updateEmail = (email: any) => {
       axios.put(`http://localhost:3000/emails/${email.id}`, email);
@@ -86,16 +88,16 @@ export default {
         email.archived = !email.archived;
       }
       if (save) {
-        emails.updateEmail(email);
+        updateEmail(email);
       }
       if (closeModal) {
         dataDetail.value = null;
       }
       if (changeIndex) {
-        let emails = dataDetail.value.unarchivedEmails;
-        let currentIndex = emails.indexOf(dataDetail.value);
-        let newEmail = emails[currentIndex + changeIndex];
-        dataDetail.value(newEmail);
+        const emails = unarchivedEmails.value;
+        const currentIndex = emails.indexOf(dataDetail.value);
+        const newEmail = emails[currentIndex + changeIndex];
+        openEmail(newEmail);
       }
     };
     const sortedEmails = computed(() => {
