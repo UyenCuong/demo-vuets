@@ -25,8 +25,8 @@
       </tr>
     </tbody>
   </table>
-  <ModalView v-if="dataDetail" @closeModal="dataDetail = null">
-    <MailView :email="dataDetail" @changeEmail="changeEmail" />
+  <ModalView v-if="dataDetail" @closeModal="closeModalView">
+    <MailView :email="dataDetail" @changeEmail="changeEmail" @change="changeIndexEmail"/>
   </ModalView>
 </template>
 
@@ -53,6 +53,9 @@ export default {
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
     const dataDetail = ref();
+    const closeModalView =() => {
+      dataDetail.value=null;
+    }
     const openEmail = (email: any) => {
       dataDetail.value = email;
       if (email) {
@@ -95,7 +98,9 @@ export default {
       }
       if (changeIndex) {
         const emails = unarchivedEmails.value;
+        console.log(emails)
         const currentIndex = emails.indexOf(dataDetail.value);
+        console.log(currentIndex, 'hdhdk')
         const newEmail = emails[currentIndex + changeIndex];
         openEmail(newEmail);
       }
@@ -120,6 +125,7 @@ export default {
       unarchivedEmails,
       updateEmail,
       changeEmail,
+      closeModalView
     };
   },
 };
