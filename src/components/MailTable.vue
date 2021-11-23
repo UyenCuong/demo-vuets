@@ -5,7 +5,7 @@
     @change="onCheckAllChange"
     >checkall</a-checkbox
   > -->
-  <input type="checkbox" v-model="allSelected" />
+  <input type="checkbox" v-model="allSelected" @click="CheckAll" />
   <p>CheckAll</p>
   <table class="mail-table">
     <tbody>
@@ -163,23 +163,23 @@ export default {
     //   });
     //   return count;
     // };
-     const allSelected = ref(false)
+    const allSelected = ref(false);
     const CheckAll = () => {
-      allSelected.value = !allSelected.value
+      allSelected.value = !allSelected.value;
       if (allSelected.value) {
-        emails.forEach((item:any) => {
+        emails.forEach((item: any) => {
           if (!item.comleted) {
-            item.comleted = true
+            item.comleted = true;
           }
-        })
+        });
       } else {
-        emails.forEach((item:any) => {
+        emails.forEach((item: any) => {
           if (item.comleted) {
-            item.comleted = false
+            item.comleted = false;
           }
-        })
+        });
       }
-    }
+    };
     const hasSelect = () => {
       const count = countCheck()
       if (count === emails.length) {
@@ -214,7 +214,7 @@ export default {
       // onCheckChange,
       hasSelect,
       CheckAll,
-       allSelected,
+      allSelected,
     };
   },
 };
