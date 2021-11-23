@@ -56,10 +56,10 @@ export default {
       });
     };
     const goNewer = () => {
-      emit("changeEmail", { changeIndex: -1 });
+      emit('changeEmail', {changeIndex: -1});
     };
     const goOlder = () => {
-      emit("changeEmail", { changeIndex: 1 });
+      emit('changeEmail', {changeIndex: 1});
     };
     const goNewerAndArchive = () => {
       emit("changeEmail", { changeIndex: -1, toggleArchive: true, save: true });

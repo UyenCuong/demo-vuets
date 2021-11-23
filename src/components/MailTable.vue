@@ -5,18 +5,18 @@
         v-for="email in unarchivedEmails"
         :key="email.id"
         :class="['clickable', email.read ? 'read' : '']"
-         @click="openEmail(email)"
+        @click="openEmail(email)"
       >
         <td>
           <a-checkbox></a-checkbox>
         </td>
         <td>{{ email.from }}</td>
-        <td >
+        <td>
           <p>
             <strong> {{ email.subject }} </strong> -{{ email.bode }}
           </p>
         </td>
-        <td class="date" >
+        <td class="date">
           {{ format(new Date(email.sentAt), "do MMM yyy") }}
         </td>
         <td>
@@ -26,7 +26,10 @@
     </tbody>
   </table>
   <ModalView v-if="dataDetail" @closeModal="closeModalView">
-    <MailView :email="dataDetail" @changeEmail="changeEmail" @change="changeIndexEmail"/>
+    <MailView
+      :email="dataDetail"
+      @changeEmail="changeEmail"
+    />
   </ModalView>
 </template>
 
@@ -53,9 +56,9 @@ export default {
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
     const dataDetail = ref();
-    const closeModalView =() => {
-      dataDetail.value=null;
-    }
+    const closeModalView = () => {
+      dataDetail.value = null;
+    };
     const openEmail = (email: any) => {
       dataDetail.value = email;
       if (email) {
@@ -98,9 +101,13 @@ export default {
       }
       if (changeIndex) {
         const emails = unarchivedEmails.value;
-        console.log(emails)
-        const currentIndex = emails.indexOf(dataDetail.value);
-        console.log(currentIndex, 'hdhdk')
+        // const currentIndex = emails.indexOf(dataDetail);
+        const currentIndex = emails
+          .map(function (item: any) {
+            return item.id;
+          })
+          .indexOf(dataDetail.value.id);
+        console.log(currentIndex, "hdhdk");
         const newEmail = emails[currentIndex + changeIndex];
         openEmail(newEmail);
       }
@@ -125,7 +132,8 @@ export default {
       unarchivedEmails,
       updateEmail,
       changeEmail,
-      closeModalView
+      closeModalView,
+      // changeIndexEmail,
     };
   },
 };
