@@ -8,7 +8,7 @@
         @click="openEmail(email)"
       >
         <td>
-          <a-checkbox></a-checkbox>
+          <BulkActionBar/>
         </td>
         <td>{{ email.from }}</td>
         <td>
@@ -26,10 +26,7 @@
     </tbody>
   </table>
   <ModalView v-if="dataDetail" @closeModal="closeModalView">
-    <MailView
-      :email="dataDetail"
-      @changeEmail="changeEmail"
-    />
+    <MailView :email="dataDetail" @changeEmail="changeEmail" />
   </ModalView>
 </template>
 
@@ -48,10 +45,12 @@ import { format, parseISO } from "date-fns";
 import axios from "axios";
 import MailView from "@/components/MailView.vue";
 import ModalView from "@/components/ModalView.vue";
+import BulkActionBar from "@/components/BulkActionBar.vue"
 export default {
   components: {
     MailView,
     ModalView,
+    BulkActionBar
   },
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
