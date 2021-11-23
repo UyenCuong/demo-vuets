@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ borderBottom: '1px solid #E9E9E9' }">
+  <!-- <div :style="{ borderBottom: '1px solid #E9E9E9' }">
     <a-checkbox
       v-model:checked="checkAll"
       :indeterminate="indeterminate"
@@ -7,12 +7,11 @@
     >
       Check all
     </a-checkbox>
-  </div>
-  <a-checkbox-group  />
+  </div> -->
+  <a-checkbox />
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, watch } from "vue";
-const plainOptions: any = [];
+import { defineComponent, reactive, toRefs } from "vue";
 export default defineComponent({
   setup() {
     const state = reactive({
@@ -23,21 +22,12 @@ export default defineComponent({
 
     const onCheckAllChange = (e: any) => {
       Object.assign(state, {
-        checkedList: e.target.checked ? plainOptions : [],
         indeterminate: false,
       });
     };
-    watch(
-      () => state.checkedList,
-      (val) => {
-        state.indeterminate = !!val.length && val.length < plainOptions.length;
-        state.checkAll = val.length === plainOptions.length;
-      }
-    );
 
     return {
       ...toRefs(state),
-      plainOptions,
       onCheckAllChange,
     };
   },
