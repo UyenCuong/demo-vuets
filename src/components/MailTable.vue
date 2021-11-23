@@ -13,7 +13,7 @@
         :class="['clickable', email.read ? 'read' : '']"
       >
         <td>
-          <a-checkbox />
+          <a-checkbox @change="onCheckChange" v-model="checkedList" />
         </td>
         <td @click="openEmail(email)">{{ email.from }}</td>
         <td @click="openEmail(email)">
@@ -44,23 +44,23 @@ interface Email {
   sentAt: string;
   archived: boolean;
   read: boolean;
+  comleted: boolean;
 }
 import { ref, computed, reactive, toRefs, watch } from "vue";
 import { format, parseISO } from "date-fns";
 import axios from "axios";
 import MailView from "@/components/MailView.vue";
 import ModalView from "@/components/ModalView.vue";
-import BulkActionBar from "@/components/BulkActionBar.vue";
-const plainOptions :any = [];
+
 export default {
   components: {
     MailView,
     ModalView,
-    // BulkActionBar,
   },
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
     const dataDetail = ref();
+    const plainOptions = ref(false);
     const closeModalView = () => {
       dataDetail.value = null;
     };
@@ -125,16 +125,40 @@ export default {
     const unarchivedEmails = computed(() => {
       return sortedEmails.value.filter((item: any) => !item.archived);
     });
-     const state = reactive({
+    const state = reactive({
       indeterminate: true,
       checkAll: false,
       checkedList: [],
     });
- const onCheckAllChange = (e: any) => {
+    const onCheckAllChange = (e: any) => {
       Object.assign(state, {
         checkedList: e.target.checked ? plainOptions : [],
         indeterminate: false,
       });
+    };
+    // const onCheckChange = (e: any, item: any) => {
+    //   if (e.target.checked) {
+    //     plainOptions.value.push(item);
+    //   }
+    //   console.log(plainOptions.value, "plainOptions");
+    // };
+    const onCheckChange = () => {
+      const count = countCheck();
+      if (count === emails.length) {
+        plainOptions.value = true;
+      } else {
+        plainOptions.value = false;
+      }
+      // console.log(plainOptions.value, "plainOptions");
+    };
+    const countCheck = () => {
+      let count = 0;
+      emails.forEach((item: any) => {
+        if (item.comleted) {
+          count += 1;
+        }
+      });
+      return count;
     };
     return {
       format,
@@ -148,8 +172,9 @@ export default {
       updateEmail,
       changeEmail,
       closeModalView,
-      onCheckAllChange
-      // changeIndexEmail,
+      onCheckAllChange,
+      ...toRefs(state),
+      onCheckChange,
     };
   },
 };
