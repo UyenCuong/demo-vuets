@@ -1,6 +1,5 @@
 <template>
   <h1 class="text-primary">VMail Inbox</h1>
-<a-checkbox>checkall</a-checkbox>
   <Suspense>
     <template #default>
       <MailTable />
@@ -16,6 +15,7 @@ export default {
   components: {
     MailTable,
   },
+ 
 };
 </script>
 

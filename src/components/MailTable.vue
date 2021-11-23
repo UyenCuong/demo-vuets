@@ -1,22 +1,27 @@
 <template>
+  <a-checkbox
+    v-model:checked="checkAll"
+    :indeterminate="indeterminate"
+    @change="onCheckAllChange"
+    >checkall</a-checkbox
+  >
   <table class="mail-table">
     <tbody>
       <tr
         v-for="email in unarchivedEmails"
         :key="email.id"
         :class="['clickable', email.read ? 'read' : '']"
-       
       >
         <td>
-          <BulkActionBar/>
+          <a-checkbox />
         </td>
-        <td  @click="openEmail(email)">{{ email.from }}</td>
-        <td  @click="openEmail(email)">
+        <td @click="openEmail(email)">{{ email.from }}</td>
+        <td @click="openEmail(email)">
           <p>
             <strong> {{ email.subject }} </strong> -{{ email.bode }}
           </p>
         </td>
-        <td class="date"  @click="openEmail(email)">
+        <td class="date" @click="openEmail(email)">
           {{ format(new Date(email.sentAt), "do MMM yyy") }}
         </td>
         <td>
@@ -40,17 +45,18 @@ interface Email {
   archived: boolean;
   read: boolean;
 }
-import { ref, computed } from "vue";
+import { ref, computed, reactive, toRefs, watch } from "vue";
 import { format, parseISO } from "date-fns";
 import axios from "axios";
 import MailView from "@/components/MailView.vue";
 import ModalView from "@/components/ModalView.vue";
-import BulkActionBar from "@/components/BulkActionBar.vue"
+import BulkActionBar from "@/components/BulkActionBar.vue";
+const plainOptions :any = [];
 export default {
   components: {
     MailView,
     ModalView,
-    BulkActionBar
+    // BulkActionBar,
   },
   async setup() {
     const { data: emails } = await axios.get("http://localhost:3000/emails");
@@ -119,7 +125,17 @@ export default {
     const unarchivedEmails = computed(() => {
       return sortedEmails.value.filter((item: any) => !item.archived);
     });
-
+     const state = reactive({
+      indeterminate: true,
+      checkAll: false,
+      checkedList: [],
+    });
+ const onCheckAllChange = (e: any) => {
+      Object.assign(state, {
+        checkedList: e.target.checked ? plainOptions : [],
+        indeterminate: false,
+      });
+    };
     return {
       format,
       parseISO,
@@ -132,6 +148,7 @@ export default {
       updateEmail,
       changeEmail,
       closeModalView,
+      onCheckAllChange
       // changeIndexEmail,
     };
   },
