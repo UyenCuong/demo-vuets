@@ -4,7 +4,7 @@
       <input type="checkbox" v-model="allSelected" @click="CheckAll" />
     </span>
     <span class="buttons">
-      <button @click="hasSelect.emails.markRead(email)">Mark Read</button>
+      <button @click="markRead()">Mark Read</button>
       <button>Mark Unread</button>
       <button>Archive</button>
     </span>
@@ -165,7 +165,9 @@ export default {
     };
     const markRead = () => {
       emails.forEach((email: any) => {
-        email.read = true;
+        if (email.comleted === true) {
+          email.read = true;
+        }
         axios.put(`http://localhost:3000/emails/${email.id}`, email);
       });
     };
