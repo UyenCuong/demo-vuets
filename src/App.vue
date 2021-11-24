@@ -111,6 +111,9 @@ input[type="checkbox"]:checked {
   max-width: 1000px;
   margin: auto;
   border-collapse: collapse;
+  width: 1000px;
+    height: 200px;
+
 }
 .mail-table tr.read {
   background-color: #eee;

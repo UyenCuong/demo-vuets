@@ -1,6 +1,14 @@
 <template>
-  <input type="checkbox" v-model="allSelected" @click="CheckAll" />
-  <p>CheckAll</p>
+  <div class="bulk-action-bar">
+    <span class="checkbox">
+      <input type="checkbox" v-model="allSelected" @click="CheckAll" />
+    </span>
+    <span class="buttons">
+      <button @click="hasSelect.emails.markRead(email)">Mark Read</button>
+      <button>Mark Unread</button>
+      <button>Archive</button>
+    </span>
+  </div>
   <table class="mail-table">
     <tbody>
       <tr
@@ -155,6 +163,13 @@ export default {
       });
       return count;
     };
+    const markRead = () => {
+      emails.forEach((email: any) => {
+        email.read = true;
+        axios.put(`http://localhost:3000/emails/${email.id}`, email);
+      });
+    };
+
     return {
       format,
       parseISO,
@@ -170,6 +185,7 @@ export default {
       hasSelect,
       CheckAll,
       allSelected,
+      markRead,
     };
   },
 };
