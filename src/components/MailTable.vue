@@ -5,8 +5,8 @@
     </span>
     <span class="buttons">
       <button @click="markRead()">Mark Read</button>
-      <button>Mark Unread</button>
-      <button>Archive</button>
+      <button @click="markUnread()">Mark Unread</button>
+      <button @click="archive()">Archive</button>
     </span>
   </div>
   <table class="mail-table">
@@ -50,7 +50,7 @@ interface Email {
   read: boolean;
   comleted: boolean;
 }
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { format, parseISO } from "date-fns";
 import axios from "axios";
 import MailView from "@/components/MailView.vue";
@@ -62,7 +62,11 @@ export default {
     ModalView,
   },
   async setup() {
-    const { data: emails } = await axios.get("http://localhost:3000/emails");
+    const emails = ref<[]>([]);
+    const getData = async () => {
+      const { data } = await axios.get("http://localhost:3000/emails");
+      emails.value = data;
+    };
     const dataDetail = ref();
     const closeModalView = () => {
       dataDetail.value = null;
@@ -121,7 +125,7 @@ export default {
       }
     };
     const sortedEmails = computed(() => {
-      return emails.sort((item1: any, item2: any) => {
+      return emails.value.sort((item1: any, item2: any) => {
         return item1.sentAt < item2.sentAt ? 1 : -1;
       });
     });
@@ -163,15 +167,33 @@ export default {
       });
       return count;
     };
-    const markRead = () => {
-      emails.forEach((email: any) => {
+    const markRead = async () => {
+      emails.value.forEach((email: any) => {
         if (email.comleted === true) {
           email.read = true;
         }
         axios.put(`http://localhost:3000/emails/${email.id}`, email);
       });
     };
-
+    const markUnread = () => {
+      emails.value.forEach((email: any) => {
+        if (email.comleted === true) {
+          email.read = false;
+        }
+        axios.put(`http://localhost:3000/emails/${email.id}`, email);
+      });
+    };
+    const archive = () => {
+      emails.value.forEach((email: any) => {
+        if (email.comleted === true) {
+          email.archived = true;
+        }
+        axios.put(`http://localhost:3000/emails/${email.id}`, email);
+      });
+    };
+    onMounted(async () => {
+      getData();
+    });
     return {
       format,
       parseISO,
@@ -188,6 +210,9 @@ export default {
       CheckAll,
       allSelected,
       markRead,
+      markUnread,
+      archive,
+     
     };
   },
 };
