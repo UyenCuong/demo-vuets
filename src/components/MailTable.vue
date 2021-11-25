@@ -4,9 +4,9 @@
       <input type="checkbox" v-model="allSelected" @click="CheckAll" />
     </span>
     <span class="buttons">
-      <button @click="markRead()">Mark Read</button>
-      <button @click="markUnread()">Mark Unread</button>
-      <button @click="archive()">Archive</button>
+      <button @click="markRead()" :disabled="isDisabled">Mark Read</button>
+      <button @click="markUnread()" :disabled="isDisabled">Mark Unread</button>
+      <button @click="archive()" :disabled="isDisabled">Archive</button>
     </span>
   </div>
   <table class="mail-table">
@@ -68,6 +68,7 @@ export default {
       emails.value = data;
     };
     const dataDetail = ref();
+    const isDisabled = ref(true);
     const closeModalView = () => {
       dataDetail.value = null;
     };
@@ -142,20 +143,28 @@ export default {
             item.comleted = true;
           }
         });
+        isDisabled.value = false;
       } else {
         unarchivedEmails.value.forEach((item: any) => {
           if (item.comleted) {
             item.comleted = false;
           }
         });
+        isDisabled.value = true;
       }
     };
     const hasSelect = () => {
       const count = countCheck();
+      console.log(count);
+
       if (count === unarchivedEmails.value.length) {
         allSelected.value = true;
       } else {
         allSelected.value = false;
+        isDisabled.value = false;
+      }
+      if (count === 0) {
+        isDisabled.value = true;
       }
     };
     const countCheck = () => {
@@ -191,6 +200,7 @@ export default {
         axios.put(`http://localhost:3000/emails/${email.id}`, email);
       });
     };
+
     onMounted(async () => {
       getData();
     });
@@ -212,7 +222,7 @@ export default {
       markRead,
       markUnread,
       archive,
-     
+      isDisabled,
     };
   },
 };
